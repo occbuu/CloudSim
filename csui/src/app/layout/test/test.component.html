@@ -1,72 +1,120 @@
 <div [@routerTransition]>
-    <app-page-header [heading]="'Test'" [icon]="'fa-info'"></app-page-header>
+    <app-page-header [heading]="'Examples'" [icon]="'fa-info'"></app-page-header>
 
     <div class="jumbotron">
-        <h1>Hello, world!</h1>
+        <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '4px', fullScreenBackdrop: true }"></ngx-loading>
         <p>
-            This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.
+            <button type="button" class="btn btn-sm btn-primary" (click)="showExample('1')">Example 1 </button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="showExample('2')">Example 2</button>
+            <button type="button" class="btn btn-sm btn-secondary" (click)="showExample('3')">Example 3</button>
+            <button type="button" class="btn btn-sm btn-success" (click)="showExample('4')">Example 4</button>
+            <button type="button" class="btn btn-sm btn-info" (click)="showExample('5')">Example 5</button>
+            <button type="button" class="btn btn-sm btn-warning" (click)="showExample('6')">Example 6</button>
+            <button type="button" class="btn btn-sm btn-danger" (click)="showExample('7')">Example 7</button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="showExample('8')">Example 8</button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="testpost()">ARIMA</button>
         </p>
-        <p>
-            <a href="javascript:void(0)" class="btn btn-primary btn-lg" role="button">Learn more »</a>
-        </p>
-    </div>
-
-    <p>
-        <button type="button" class="btn btn-sm btn-default" (click)="getOrders()">get Orders</button>
-        <button type="button" class="btn btn-sm btn-primary">Primary</button>
-        <button type="button" class="btn btn-sm btn-secondary">Secondary</button>
-        <button type="button" class="btn btn-sm btn-success">Success</button>
-        <button type="button" class="btn btn-sm btn-info">Info</button>
-        <button type="button" class="btn btn-sm btn-warning">Warning</button>
-        <button type="button" class="btn btn-sm btn-danger">Danger</button>
-        <button type="button" class="btn btn-sm btn-link">Link</button>
-    </p>
-
-    <br>
-
-    <div class="page-header">
-        <h1>List groups</h1>
-        <hr>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <ul class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
-            </ul>
-        </div>
-        <!-- /.col-sm-4 -->
-        <div class="col-sm-4">
-            <div class="list-group">
-                <a href="javascript:void(0)" class="list-group-item active">Cras justo odio</a>
-                <a href="javascript:void(0)" class="list-group-item">Dapibus ac facilisis in</a>
-                <a href="javascript:void(0)" class="list-group-item">Morbi leo risus</a>
-                <a href="javascript:void(0)" class="list-group-item">Porta ac consectetur ac</a>
-                <a href="javascript:void(0)" class="list-group-item">Vestibulum at eros</a>
+        <div class="row">
+            <div class="col col-xl-7 col-lg-12">
+                <div class="card mb-3">
+                    <div class="card-header">Kết quả chạy</div>
+                    <table class="table table-sm tbl-smm" *ngIf="isNotFive">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cloudlet ID (User)</th>
+                                <th>Status</th>
+                                <th>Data center ID</th>
+                                <th>VM ID</th>
+                                <th>Time</th>
+                                <th>Start Time</th>
+                                <th>Finish Time</th>
+                                <th>Reponse Time</th>
+                                <th>Execuse Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of Cloudlets">
+                                <td class="text-center">{{item.no}}</td>
+                                <td style="display:flex">
+                                    {{item.cloudletID}}
+                                </td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.dataCenterID}}</td>
+                                <td>{{item.vmID}}</td>
+                                <td>{{item.time}}</td>
+                                <td>{{item.startTime}}</td>
+                                <td>{{item.finishTime}}</td>
+                                <td>{{item.responseTime}}</td>
+                                <td>{{item.executionTime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm tbl-smm" *ngIf="isFive">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cloudlet ID (User)</th>
+                                <th>Status</th>
+                                <th>Data center ID</th>
+                                <th>VM ID</th>
+                                <th>Time</th>
+                                <th>Start Time</th>
+                                <th>Finish Time</th>
+                                <th>Reponse Time</th>
+                                <th>Execuse Time</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let brk of Brokers">
+                            <tr>
+                                <th colspan="10">User : #{{brk.brokerID}}</th>
+                            </tr>
+                            <tr *ngFor="let item of brk.cloudlets">
+                                <td class="text-center">{{item.no}}</td>
+                                <td style="display:flex">
+                                    {{item.cloudletID}}
+                                </td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.dataCenterID}}</td>
+                                <td>{{item.vmID}}</td>
+                                <td>{{item.time}}</td>
+                                <td>{{item.startTime}}</td>
+                                <td>{{item.finishTime}}</td>
+                                <td>{{item.responseTime}}</td>
+                                <td>{{item.executionTime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card bg-light mb-3">
+                    <div class="card-header ">Log : {{ExampleTitle}}</div>
+                    <div class="card-body card-body-new">
+                        <pre [innerHTML]="Logging"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-xl-5 col-lg-12">
+                <div class="card bg-light mb-3">
+                    <div class="card-header ">Mô tả : {{ExampleTitle}}</div>
+                    <div class="card-body card-body-new">
+                        <p class="card-text">{{ExampleDesc}}</p>
+                        <p class="card-text">{{ExampleDescEng}}</p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Line Chart
+                    </div>
+                    <div class="card-body">
+                        <canvas baseChart height="130" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+                                </canvas>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- /.col-sm-4 -->
-        <div class="col-sm-4">
-            <div class="list-group">
-                <a href="javascript:void(0)" class="list-group-item active">
-                    <h4 class="list-group-item-heading">List group item heading</h4>
-                    <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                </a>
-                <a href="javascript:void(0)" class="list-group-item">
-                    <h4 class="list-group-item-heading">List group item heading</h4>
-                    <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                </a>
-                <a href="javascript:void(0)" class="list-group-item">
-                    <h4 class="list-group-item-heading">List group item heading</h4>
-                    <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                </a>
-            </div>
-        </div>
-        <!-- /.col-sm-4 -->
     </div>
+
+
 
 
 

@@ -1,0 +1,151 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'Proposal Algorithm with ARIMA'" [icon]="'fa-info'"></app-page-header>
+    <small>See more details on a company's listing</small>
+    <div class="card" style="margin-top: 10px">
+        <div class="card-header" (click)="isCollapsed = !isCollapsed">
+            <i class="pull-right fa" [ngClass]="{'fa-chevron-down': isCollapsed, 'fa-chevron-up': !isCollapsed}"></i>
+            <strong>Search Criteria</strong>
+        </div>
+        <div class="card-body" [ngbCollapse]="isCollapsed">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="select">Vms' Qty</label>
+                        <select [(ngModel)]="criteria.vmsQty" class="col-md-4 form-control">
+                            <option  value="3">3</option>
+                            <option  value="4">4</option>
+                            <option  value="5">5</option>
+                            <option  value="6">6</option>
+                            <option  value="7">7</option>
+                            <option  value="8">8</option>
+                            <option  value="9">9</option>
+                            <option  value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="select">Number of Requests</label>
+                        <select [(ngModel)]="criteria.cloudletQty" class="col-md-4 form-control">
+                        <option  value="100">100</option>
+                        <option  value="200">200</option>
+                        <option  value="300">300</option>
+                        <option  value="400">400</option>
+                        <option  value="500">500</option>
+                        <option  value="600">600</option>
+                        <option  value="700">700</option>
+                        <option  value="800">800</option>
+                        <option  value="900">900</option>
+                        <option  value="1000">1.000</option>                        
+                    </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" style="margin-left: 1%">
+                <button class="btn btn-outline-primary pull-right" (click)="showArima()" type="button">Run simulation</button> &nbsp;
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="jumbotron">
+        <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '4px', fullScreenBackdrop: true }"></ngx-loading>
+        <div class="row">
+            <div class="col col-xl-12 col-lg-12">
+                <div class="card mb-3 div-cloudlets">
+                    <div class="card-header">List of Requests (Cloudlets)</div>
+                    <table class="table table-sm tbl-smm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cloudlet ID (User)</th>
+                                <th>Status</th>
+                                <th>Data center ID</th>
+                                <th>VM ID</th>
+                                <th>Time</th>
+                                <th>Start Time</th>
+                                <th>Finish Time</th>
+                                <th>Reponse Time</th>
+                                <th>Execuse Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of Cloudlets">
+                                <td class="text-center">{{item.no}}</td>
+                                <td style="display:flex">
+                                    {{item.cloudletID}}
+                                </td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.dataCenterID}}</td>
+                                <td>{{item.vmID}}</td>
+                                <td>{{item.time}}</td>
+                                <td>{{item.startTime}}</td>
+                                <td>{{item.finishTime}}</td>
+                                <td>{{item.responseTime}}</td>
+                                <td>{{item.executionTime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xl-6 col-lg-12">
+                <div class="card mb-3 div-cloudlets">
+                    <div class="card-header">List of Virtual Machines</div>
+                    <table class="table table-sm tbl-smm">
+                        <tbody *ngFor="let item of Vms">
+                            <tr>
+                                <th>#</th>
+                                <th>VM ID</th>
+                                <th>Predicted RT</th>
+                                <th>Total Served Requests</th>
+                            </tr>
+                            <tr>
+                                <td class="text-center">{{item.no}}</td>
+                                <td style="display:flex">
+                                    {{item.vmID}}
+                                </td>
+                                <td>{{item.predictedRT}}</td>
+                                <td>
+                                    {{item.totalServedRequest}}
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td colspan="4">
+                                    <span *ngFor="let rt of item.lastRT" class="badge badge-secondary"> {{rt}} </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Predicted Response Time of VMs at current time
+                    </div>
+                    <div class="card-body">
+                        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+                            </canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-xl-6 col-lg-12">
+                <div class="card bg-light mb-3">
+                    <div class="card-header ">Broker information</div>
+                    <div class="card-body card-body-new">
+                        <p class="card-text">Cloud predicted RT: {{BrokerPredictedRT}}</p>
+                        <p class="card-text">{{ExampleDescEng}}</p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Response Time of VMs (Line Chart)
+                    </div>
+                    <div class="card-body">
+                        <canvas baseChart height="130" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+                                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
